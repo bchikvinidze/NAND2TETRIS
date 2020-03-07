@@ -3,7 +3,7 @@
 // by Nisan and Schocken, MIT Press.
 // File name: projects/01/DMux8Way.hdl
 
-/**
+/** Dmux4Way(42) + DMux(14)*4 = 98
  * 8-way demultiplexor:
  * {a, b, c, d, e, f, g, h} = {in, 0, 0, 0, 0, 0, 0, 0} if sel == 000
  *                            {0, in, 0, 0, 0, 0, 0, 0} if sel == 001
@@ -16,5 +16,9 @@ CHIP DMux8Way {
     OUT a, b, c, d, e, f, g, h;
 
     PARTS:
-    // Put your code here:
+    DMux4Way(in=in,sel=sel[0..1],a=out0,b=out1,c=out2,d=out3);
+    DMux(in=out0,sel=sel[2],a=a,b=e);
+    DMux(in=out1,sel=sel[2],a=b,b=f);
+    DMux(in=out2,sel=sel[2],a=c,b=g);
+    DMux(in=out3,sel=sel[2],a=d,b=h);
 }

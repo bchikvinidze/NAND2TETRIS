@@ -3,7 +3,7 @@
 // by Nisan and Schocken, MIT Press.
 // File name: projects/01/DMux.hdl
 
-/**
+/** Mux(7)*2 = 14
  * Demultiplexor:
  * {a, b} = {in, 0} if sel == 0
  *          {0, in} if sel == 1
@@ -14,5 +14,6 @@ CHIP DMux {
     OUT a, b;
 
     PARTS:
-    // Put your code here:
+    Mux(a=in,b=false,sel=sel,out=a);
+    Mux(a=false,b=in,sel=sel,out=b);
 }

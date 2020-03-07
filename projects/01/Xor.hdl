@@ -3,7 +3,7 @@
 // by Nisan and Schocken, MIT Press.
 // File name: projects/01/Xor.hdl
 
-/**
+/** Nand(1)+Or(3)+And(2) = 6
  * Exclusive-or gate:
  * out = not (a == b)
  */
@@ -13,5 +13,7 @@ CHIP Xor {
     OUT out;
 
     PARTS:
-    // Put your code here:
+    Nand(a=a,b=b,out=nand);
+    Or(a=a,b=b,out=or);
+    And(a=nand,b=or,out=out);
 }
