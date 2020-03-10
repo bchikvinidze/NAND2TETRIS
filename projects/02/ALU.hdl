@@ -3,7 +3,7 @@
 // by Nisan and Schocken, MIT Press.
 // File name: projects/02/ALU.hdl
 
-/**
+/** Mux16(112)*6 + Not16(16)*3 + Add16(368) + And16(32) + Mux(7) + Or8Way(21)*2 + Or(3) + Not(1) = 1173
  * The ALU (Arithmetic Logic Unit).
  * Computes one of the following functions:
  * x+y, x-y, y-x, 0, 1, -1, x, y, -x, -y, !x, !y,
@@ -42,5 +42,31 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
-   // Put you code here:
+    /* zx */
+    Mux16(a=x,b[0..15]=false,sel=zx,out=x1);
+    /* zy */
+    Mux16(a=y,b[0..15]=false,sel=zy,out=y1);
+    /* ! */
+    Not16(in=x1,out=notx);
+    Not16(in=y1,out=noty);
+    /* nx */
+    Mux16(a=x1,b=notx,sel=nx,out=x2);
+    /* ny */
+    Mux16(a=y1,b=noty,sel=ny,out=y2);
+    /* + */
+    Add16(a=x2,b=y2,out=sum);
+    /* & */
+    And16(a=x2,b=y2,out=and);
+    /* f */
+    Mux16(a=and,b=sum,sel=f,out=fun);
+    Not16(in=fun,out=notfun);
+    /* no */
+    Mux16(a=fun,b=notfun,sel=no,out=out,out[15]=inp1,out[0..7]=inp2,out[8..15]=inp3);
+    /* ng */
+    Mux(a=false,b=true,sel=inp1,out=ng);
+    /* zr */
+    Or8Way(in=inp2,out=or1);    
+    Or8Way(in=inp3,out=or2);    
+    Or(a=or1,b=or2,out=or);
+    Not(in=or,out=zr);
 }
