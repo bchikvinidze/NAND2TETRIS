@@ -3,7 +3,7 @@
 // by Nisan and Schocken, MIT Press.
 // File name: projects/05/CPU.hdl
 
-/**
+/** ALU(1173) + Mux16(112)*2 + Not(1)*3 + Or(3)*3 + ARegister(128) + And(2)*10 + DRegister(128) + PC(832) =  2517
  * The Hack CPU (Central Processing unit), consisting of an ALU,
  * two registers named A and D, and a program counter named PC.
  * The CPU is designed to fetch and execute instructions written in 
@@ -25,7 +25,7 @@
  * than to the address resulting from executing the current instruction. 
  */
 
-CHIP CPU {
+CHIP CPU { 
 
     IN  inM[16],         // M value input  (M = contents of RAM[A])
         instruction[16], // Instruction for execution
@@ -39,5 +39,35 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+
+    ALU(x=dreg,y=aluy,zx=instruction[11],nx=instruction[10],zy=instruction[9],ny=instruction[8],f=instruction[7],no=instruction[6],out=aluOut,out=outM,zr=zr,ng=ng);
+    /* Leftest Mux on diagram in the book */
+    Mux16(a=instruction,b=aluOut,sel=instruction[15],out=a);
+    Not(in=instruction[15],out=not);
+    Or(a=not,b=instruction[5],out=aload);
+    ARegister(in=a,load=aload,out=areg,out[0..14]=addressM);
+
+    /* handling writeM */
+    And(a=instruction[15],b=instruction[3],out=writeM); 
+
+    /*Handling DRegister and alu input */
+    And(a=instruction[15],b=instruction[12],out=and2); 
+    Mux16(a=areg,b=inM,sel=and2,out=aluy);
+    And(a=instruction[15],b=instruction[4],out=d);
+    DRegister(in=aluOut,load=d,out=dreg);
+
+    /* This part concerns PC*/
+    And(a=instruction[15],b=instruction[2],out=jlt);
+    And(a=instruction[15],b=instruction[1],out=jeq);
+    And(a=instruction[15],b=instruction[0],out=jgt);
+    Not(in=zr,out=notZr);
+    Not(in=ng,out=notNg);
+    And(a=zr,b=jeq,out=var1);
+    And(a=ng,b=jlt,out=var2);
+    And(a=notZr,b=notNg,out=p);
+    And(a=p,b=jgt,out=var3);
+    Or(a=var1,b=var2,out=load1);
+    Or(a=load1,b=var3,out=pcLoad);
+    PC(in=areg,load=pcLoad,inc=true,reset=reset,out[0..14]=pc);
 }
+    

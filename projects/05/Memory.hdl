@@ -3,7 +3,7 @@
 // by Nisan and Schocken, MIT Press.
 // File name: projects/05/Memory.hdl
 
-/**
+/** Mux4Way16(336) + DMux4Way(42) + Or(3) + RAM16K(4161410) + Screen(1) + Keyboard(1) = 4161793
  * The complete address space of the Hack computer's memory,
  * including RAM and memory-mapped I/O. 
  * The chip facilitates read and write operations, as follows:
@@ -27,5 +27,10 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    Mux4Way16(a=ram,b=ram,c=sc,d=kb,sel=address[13..14],out=out);
+    RAM16K(in=in,load=ab,address=address[0..13],out=ram);
+    Screen(in=in,load=c,address=address[0..12],out=sc);
+    Keyboard(out=kb);
+    DMux4Way(in=load,sel=address[13..14],a=a,b=b,c=c,d=d);
+    Or(a=a,b=b,out=ab);
 }
