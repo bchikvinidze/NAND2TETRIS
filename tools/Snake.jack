@@ -1,0 +1,204 @@
+class Snake{
+	field Array ar;
+	field int blockSize; //width=height
+	field int dir; //0,1,2 or 3
+	field int length; //number of blocks
+	field int headX;
+	field int headY;
+	field boolean overlaps;
+	field boolean grown;
+
+	/** constructs a new snake */
+	constructor Snake new(){
+		var int i;
+		var Square curBlock;
+		var int ax;
+		let length = 20;
+		let dir = 0;
+		let blockSize = 5;
+		let ar = Array.new(length);
+		let i = 0;
+		let overlaps = false;
+		let grown = false;
+		while(i < length){
+			let ax = i*blockSize;
+			let ar[i] = Square.new(ax, 0, blockSize);
+			let i = i+1;
+		}
+		return this;
+	}
+
+	/** disposes of the snake */
+	method void dispose(){
+		var int i;
+		var Square curBlock;
+		let i = 0;
+		while(i<length){
+			let curBlock = ar[i];
+			do curBlock.erase();
+			do curBlock.dispose();
+			let i = i + 1;
+		}
+		do Memory.deAlloc(this);
+      	return;
+	}
+
+	/** adds one more block to its body*/
+	method void grow(){
+		let grown = true;
+		let length = length + 1;
+		return;
+	}
+
+
+
+
+	/** prepares for moving the snake*/
+	method void prepMove(){
+	  var Array tmpAr;
+	  var int i;
+      var Square tail;
+      var Square head;
+      var int tailX;
+      var int tailY;
+
+      let i = 0;
+      let tail = ar[0];
+      let tailX = tail.getX();
+      let tailY = tail.getY();
+      let blockSize = tail.getSize();
+
+      if(~grown){
+
+	      do Screen.setColor(false);
+	      do Screen.drawRectangle(tailX, tailY, tailX + blockSize, tailY + blockSize);
+	      do Screen.setColor(true);
+	      while(i < (length-1)){
+	      	  let ar[i] = ar[i+1];
+	      	  let i = i + 1;
+	      }
+	      let head = ar[length-1];
+
+	   } else {
+
+	   	  let tmpAr = Array.new(length);
+	   	  while(i < (length-1)){
+	      	  let tmpAr[i] = ar[i];
+	      	  let i = i + 1;
+	      }
+	      let ar = tmpAr; //swap arrays
+	      let head = ar[length-2]; //!!!!!!!! aqaa problema!
+
+	   }
+
+      let headX = head.getX();
+      let headY = head.getY();
+      return;
+	}
+
+
+
+
+	/** Moves the snake up. */
+    method void moveUp() {
+      do prepMove();
+      if (~(headY > 1)) {
+      	do Sys.halt();
+      }
+      let ar[length-1] = Square.new(headX, headY-blockSize, blockSize);
+      let overlaps = overlap();
+      if(overlaps){ do Sys.halt(); }
+      return;
+    }
+
+   /** Moves the snake down. */
+    method void moveDown() {
+      do prepMove();
+      if (~((headY + blockSize) < 254)) {
+      	do Sys.halt();
+      }
+      let ar[length-1] = Square.new(headX, headY+blockSize, blockSize);
+      let overlaps = overlap();
+      if(overlaps){ do Sys.halt(); }
+      return;
+    }
+
+   /** Moves the snake left. */
+    method void moveLeft() {
+      do prepMove();
+      if (~(headX > 1)) {
+      	do Sys.halt();
+      }
+      let ar[length-1] = Square.new(headX-blockSize, headY, blockSize);
+      let overlaps = overlap();
+      if(overlaps){ do Sys.halt(); }
+      return;
+    }
+
+   /** Moves the snake right. */
+    method void moveRight() {
+      do prepMove();
+      if (~((headX + blockSize) < 510)) {
+      	do Sys.halt();
+      }
+      let ar[length-1] = Square.new(headX+blockSize, headY, blockSize);
+      let overlaps = overlap();
+      if(overlaps){ do Sys.halt(); }
+      return;
+    }
+
+    /** checks if head overlaps with any of the blocks*/
+    method boolean overlap(){
+    	var boolean result;
+    	var int i;
+    	var Square curSquare;
+    	var int curX;
+    	var int curY;
+    	var Square head;
+
+		let head = ar[length-1];
+        let headX = head.getX();
+        let headY = head.getY();
+    	let i = 0;
+    	let result = false;
+    	while(i < (length-1)){
+    		let curSquare = ar[i];
+    		let curX = curSquare.getX();
+    		let curY = curSquare.getY();
+    		if(headX = curX){
+    			if(headY = curY){
+    				let result = true;
+    				return result;
+    			}
+    		}
+    		let i = i + 1;
+    	}
+    	return result;
+    }
+
+    /** checks if another block overlaps with any of the blocks (p.s. bad OOP design)*/
+    method boolean overlapAnother(int argX, int argY){
+    	var boolean result;
+    	var int i;
+    	var Square curSquare;
+    	var int curX;
+    	var int curY;
+
+    	let i = 0;
+    	let result = false;
+
+    	while(i < length){
+    		let curSquare = ar[i];
+    		let curX = curSquare.getX();
+    		let curY = curSquare.getY();
+    		if(argX = curX){
+    			if(argY = curY){
+    				let result = true;
+    				return result;
+    			}
+    		}
+    		let i = i + 1;
+    	}
+    	return result;
+    }
+}

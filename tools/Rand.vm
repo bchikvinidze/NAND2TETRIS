@@ -1,0 +1,11 @@
+function Rand.rand 1
+push constant 1000
+push constant 181
+push argument 0
+push constant 1
+add
+call Math.multiply 2
+add
+pop local 0
+push local 0
+return

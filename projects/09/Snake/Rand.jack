@@ -1,0 +1,7 @@
+class Rand{
+	function int rand(int step){
+		var int result;
+		let result = 1000+(181*(step+1));
+		return result;
+	}
+}
