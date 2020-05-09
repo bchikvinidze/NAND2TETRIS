@@ -13,7 +13,7 @@ class Snake{
 		var int i;
 		var Square curBlock;
 		var int ax;
-		let length = 20;
+		let length = 1;
 		let dir = 0;
 		let blockSize = 5;
 		let ar = Array.new(length);
@@ -66,7 +66,6 @@ class Snake{
       let tail = ar[0];
       let tailX = tail.getX();
       let tailY = tail.getY();
-      let blockSize = tail.getSize();
 
       if(~grown){
 
@@ -88,6 +87,7 @@ class Snake{
 	      }
 	      let ar = tmpAr; //swap arrays
 	      let head = ar[length-2]; //!!!!!!!! aqaa problema!
+	      let grown = false;
 
 	   }
 

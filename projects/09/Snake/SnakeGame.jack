@@ -1,88 +1,121 @@
+/** Modified snake game  */
 class SnakeGame{
 	field Snake snake;
 	field Square food;
+	field int direction;
+	field int foodSize;
+	field int seed;
 
 	/** constructs a new game of snake */
 	constructor SnakeGame new(){
 		let snake = Snake.new();
-		let food = Square.new(12,17,5);
-		do food.draw();
+		let foodSize = 5;
+		let food = Square.new(foodSize*20, foodSize*20, foodSize);
+		let direction = 1; // 1 right, 2 left, 3 up, 4 down
+		let seed = 11; // lets say snake already ate 11 foods.
 		return this;
 	}
 
-	/**runs the game */
+	/** runs the game */
 	method void run(){
+		var char key; // the key currently pressed by the user
+		var boolean exit;
+		let exit = false;
+		while(~exit){
+			let key = Keyboard.keyPressed();
 
+			 if (key = 81)  {   // q key
+			 	let exit = true; 
+			 	return;
+			 }    
+	         if (key = 131) {  // up arrow
+	         	if(~(direction = 4)) {
+	         		let direction = 3; 
+	         	}
+	         }  
+	         if (key = 133) {  // down arrow
+	            if(~(direction = 3)) {
+	         		let direction = 4; 
+	         	}
+	         }   
+	         if (key = 130) {   // left arrow
+	         	if(~(direction = 1)) {
+	         		let direction = 2; 
+	         	}
+	         }  
+	         if (key = 132) {  // right arrow
+	         	if(~(direction = 2)) {
+	         		let direction = 1; 	         		
+	         	}
+	         }   
+
+	         do move();
+		}
 		return;
 	}
 
-	/**disposes game */
+	/** disposes game */
 	method void dispose(){
+		do snake.dispose();
+		do food.dispose();
 		do Memory.deAlloc(this);
       	return;
 	}
 
 	/** moves snake to its direction*/
 	method void move(){
+		var boolean foodEaten;
 
+		if(direction = 1){
+			do snake.moveRight();
+		}
+		if(direction = 2){
+			do snake.moveLeft();
+		}
+		if(direction = 3){
+			do snake.moveUp();
+		}
+		if(direction = 4){
+			do snake.moveDown();
+		}
+
+		//check if food has been eaten:
+		let foodEaten = snake.overlapAnother(food.getX(), food.getY());
+		if(foodEaten){
+			do placeFood();
+			do snake.grow();
+			let seed = seed + 1;
+		}
+
+		do Sys.wait(70);
 		return;
 	}
 
 	/** places new food on board*/
 	method void placeFood(){
+		var boolean overlap;
+		var int newX;
+		var int newY;
+		var Square newFood;
+		let overlap = true;
 
+		while(overlap){
+			let newX = mod(Rand.rand(seed), 510-foodSize-1)/foodSize;
+			let newY = mod(Rand.rand(seed+3), 254-foodSize-1)/foodSize;
+			if(~snake.overlapAnother(newX*foodSize, newY*foodSize)){
+				let newFood = Square.new(newX*foodSize, newY*foodSize, foodSize);
+				let overlap = false;
+			}
+			let seed = seed + 1;
+		}
+
+		let food = newFood;
 		return;
 	}
 
-	/** checks if current move consumed food*/
-	method boolean foodConsumed(){
-
-		return;
+	/** locally adding modulo operator*/
+	method int mod(int a, int b){
+		return a-(a/b*b);
 	}
 
-	/** checks if snake hti itself or wall */
-	method boolean hit(){
-
-		return;
-	}
-
-	/** Moves the snake up by 2 pixels. */
-   method void moveUp() {
-      if (y > 1) {
-         
-      } else {
-
-      }
-      return;
-   }
-
-   /** Moves the snake down by 2 pixels. */
-   method void moveDown() {
-      if ((y + size) < 254) {
-         
-      } else {
-
-      }
-      return;
-   }
-
-   /** Moves the snake left by 2 pixels. */
-   method void moveLeft() {
-      if (x > 1) {
-         
-      } else {
-
-      }
-      return;
-   }
-
-   /** Moves the snake right by 2 pixels. */
-   method void moveRight() {
-      if ((x + size) < 510) {
-         
-      } else {
-
-      }
-      return;
-   }
 }
