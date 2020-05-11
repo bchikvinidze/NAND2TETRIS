@@ -32,8 +32,8 @@ identifier = '[\w]+'
 #files to cover
 if isFile:
     fileList.append(path)
-    outFileNames_txml.append(path[0:(len(path)-5)] + '.vm')
-    outFileNames_xml.append(path[0:(len(path)-5)] + '.vm')
+    outFileNames_txml.append(path[0:(len(path)-5)] + 'T.xml')
+    outFileNames_xml.append(path[0:(len(path)-5)] + '.xml')
 else:
     for filename in os.listdir(path):
         if filename.endswith(".jack"):
