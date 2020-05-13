@@ -25,7 +25,7 @@ specialCases = {'<':'&lt;','>':'&gt;','&':'&amp;'}
 
 keyword = '(class|constructor|function|method|static|field|var|int|char|boolean|void|true|false|null|this|let|do|if|else|while|return)'
 symbol = '[{}()[\].,;+\-*/&|<>=~]' #forgot escape for ]
-integerConstant = '\d+'
+integerConstant = '[0-9]+'
 stringConstant = '"[^"\n]*"'
 identifier = '[\w]+'
 
